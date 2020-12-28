@@ -9,5 +9,8 @@ def docker():
     print(f'Running containers: {c("ps")}')
     print(f'Total containers: {c("images")}')
 
+def lscpu():
+    result = sh.lscpu()
+
 print(free_mem())
 docker()
