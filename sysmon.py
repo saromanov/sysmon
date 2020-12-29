@@ -10,7 +10,9 @@ def docker():
     print(f'Total containers: {c("images")}')
 
 def lscpu():
-    result = sh.lscpu()
+    result = sh.lscpu('--parse=CORE')
+    print(f'Total cores {result}')
 
 print(free_mem())
 docker()
+lscpu()
