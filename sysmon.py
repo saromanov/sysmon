@@ -13,6 +13,11 @@ def lscpu():
     result = sh.lscpu('--parse=CORE')
     print(f'Total cores {result}')
 
+def process_num():
+    result = sh.wc(sh.ps('aux'), '-l')
+    print(f'Total processes: {result}')
+
 print(free_mem())
 docker()
 lscpu()
+process_num()
