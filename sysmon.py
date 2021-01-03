@@ -3,7 +3,7 @@ import sh
 
 def free_mem():
     free = sh.grep(sh.free('-m'), 'Mem').split()[3]
-    return f'Free memory: {free}'
+    print(f'Free memory: {free}')
 
 def docker():
     c = lambda x: int(sh.wc(sh.docker(x), '-l'))-1
@@ -24,8 +24,11 @@ def disk_space():
     result_total = df('size')
     print(f'free disk space {result_free}/{result_total}')
 
-print(free_mem())
-docker()
-lscpu()
-process_num()
-disk_space()
+def pipeline(*args):
+    '''
+    pipeline defines main method for executing of tasks
+    '''
+    for f in args:
+        f()
+
+pipeline(free_mem, docker, lscpu, process_num, disk_space)
