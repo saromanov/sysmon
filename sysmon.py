@@ -1,5 +1,16 @@
 import sh
 
+class Command:
+    '''
+    Basic class for command execution
+    '''
+    def __init__(self):
+        pass
+    
+    def run(self):
+        raise NotImplemented
+    def __str__(self):
+        raise NotImplemented
 
 def free_mem():
     free = sh.grep(sh.free('-m'), 'Mem').split()[3]
