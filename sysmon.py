@@ -19,8 +19,10 @@ def process_num():
     print(f'Total processes: {result}')
 
 def disk_space():
-    result = sh.awk(sh.df("-h", "--output=avail","--total"), "END {print $1}")
-    print(f'free disk space {result}')
+    df = lambda output: sh.awk(sh.df("-h", f"--output={output}","--total"), "END {print $1}").rstrip()
+    result_free = df('avail')
+    result_total = df('size')
+    print(f'free disk space {result_free}/{result_total}')
 
 print(free_mem())
 docker()
