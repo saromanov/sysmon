@@ -1,5 +1,6 @@
 import sh
 
+
 def free_mem():
     free = sh.grep(sh.free('-m'), 'Mem').split()[3]
     return f'Free memory: {free}'
@@ -17,7 +18,12 @@ def process_num():
     result = sh.wc(sh.ps('aux'), '-l')
     print(f'Total processes: {result}')
 
+def disk_space():
+    result = sh.awk(sh.df("-h", "--output=avail","--total"), "END {print $1}")
+    print(f'free disk space {result}')
+
 print(free_mem())
 docker()
 lscpu()
 process_num()
+disk_space()
