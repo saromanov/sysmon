@@ -24,6 +24,12 @@ def disk_space():
     result_total = df('size')
     print(f'free disk space {result_free}/{result_total}')
 
+def uname():
+    print(sh.uname('-v'))
+
+def vmstat():
+    print(sh.vmstat())
+
 def pipeline(*args):
     '''
     pipeline defines main method for executing of tasks
@@ -31,4 +37,4 @@ def pipeline(*args):
     for f in args:
         f()
 
-pipeline(free_mem, docker, lscpu, process_num, disk_space)
+pipeline(uname, free_mem, docker, lscpu, process_num, disk_space, vmstat)
