@@ -34,23 +34,52 @@ class Docker(Command):
 
     def __str__(self):
         return 'docker'
+
+class Lscpu(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
     
-def lscpu():
-    result = sh.lscpu('--parse=CORE')
-    print(f'Total cores {result}')
+    def run(self):
+        result = sh.lscpu('--parse=CORE')
+        print(f'Total cores {result}')
 
-def process_num():
-    result = sh.wc(sh.ps('aux'), '-l')
-    print(f'Total processes: {result}')
+    def __str__(self):
+        return 'lscpu'
 
-def disk_space():
-    df = lambda output: sh.awk(sh.df("-h", f"--output={output}","--total"), "END {print $1}").rstrip()
-    result_free = df('avail')
-    result_total = df('size')
-    print(f'free disk space {result_free}/{result_total}')
+class ProcessNum(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
+    
+    def run(self):
+        result = sh.wc(sh.ps('aux'), '-l')
+        print(f'Total processes: {result}')
 
-def vmstat():
-    print(sh.vmstat())
+    def __str__(self):
+        return 'ps -aux'
+
+class DiskSpace(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
+    
+    def run(self):
+        df = lambda output: sh.awk(sh.df("-h", f"--output={output}","--total"), "END {print $1}").rstrip()
+        result_free = df('avail')
+        result_total = df('size')
+        print(f'free disk space {result_free}/{result_total}')
+
+    def __str__(self):
+        return 'df -h'
+
+class Vmstat(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
+    
+    def run(self):
+        print(sh.vmstat())
+
+    def __str__(self):
+        return 'vmstat'
+
 
 def pipeline(*args):
     '''
@@ -62,4 +91,4 @@ def pipeline(*args):
             raise Exception('unable to validate method')
         method.run()
 
-pipeline(FreeMem(), Docker())
+pipeline(FreeMem(), Docker(), Lscpu(), ProcessNum(), DiskSpace(), Vmstat())
