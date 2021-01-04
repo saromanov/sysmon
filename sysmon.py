@@ -35,16 +35,6 @@ class Docker(Command):
     def __str__(self):
         return 'docker'
     
-
-def free_mem():
-    free = sh.grep(sh.free('-m'), 'Mem').split()[3]
-    print(f'Free memory: {free}')
-
-def docker():
-    c = lambda x: int(sh.wc(sh.docker(x), '-l'))-1
-    print(f'Running containers: {c("ps")}')
-    print(f'Total containers: {c("images")}')
-
 def lscpu():
     result = sh.lscpu('--parse=CORE')
     print(f'Total cores {result}')
@@ -59,9 +49,6 @@ def disk_space():
     result_total = df('size')
     print(f'free disk space {result_free}/{result_total}')
 
-def uname():
-    print(sh.uname('-v'))
-
 def vmstat():
     print(sh.vmstat())
 
@@ -69,6 +56,7 @@ def pipeline(*args):
     '''
     pipeline defines main method for executing of tasks
     '''
+    print(sh.uname('-v'))
     for method in args:
         if not isinstance(method, Command):
             raise Exception('unable to validate method')
