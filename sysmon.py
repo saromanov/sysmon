@@ -12,6 +12,30 @@ class Command:
     def __str__(self):
         raise NotImplemented
 
+class FreeMem(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
+    
+    def run(self):
+        free = sh.grep(sh.free('-m'), 'Mem').split()[3]
+        print(f'Free memory: {free}')
+
+    def __str__(self):
+        return 'freemem'
+
+class Docker(Command):
+    def __init__(self, *args, **kwargs):
+        Command.__init__(self)
+    
+    def run(self):
+        c = lambda x: int(sh.wc(sh.docker(x), '-l'))-1
+        print(f'Running containers: {c("ps")}')
+        print(f'Total containers: {c("images")}')
+
+    def __str__(self):
+        return 'docker'
+    
+
 def free_mem():
     free = sh.grep(sh.free('-m'), 'Mem').split()[3]
     print(f'Free memory: {free}')
@@ -45,7 +69,9 @@ def pipeline(*args):
     '''
     pipeline defines main method for executing of tasks
     '''
-    for f in args:
-        f()
+    for method in args:
+        if not isinstance(method, Command):
+            raise Exception('unable to validate method')
+        method.run()
 
-pipeline(uname, free_mem, docker, lscpu, process_num, disk_space, vmstat)
+pipeline(FreeMem(), Docker())
