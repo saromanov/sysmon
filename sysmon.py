@@ -1,3 +1,4 @@
+import argparse
 import sh
 
 class Command:
@@ -9,7 +10,7 @@ class Command:
     
     def run(self):
         raise NotImplemented
-    def __str__(self):
+    def __repr__(self):
         raise NotImplemented
 
 class FreeMem(Command):
@@ -20,7 +21,7 @@ class FreeMem(Command):
         free = sh.grep(sh.free('-m'), 'Mem').split()[3]
         print(f'Free memory: {free}')
 
-    def __str__(self):
+    def __repr__(self):
         return 'freemem'
 
 class Docker(Command):
@@ -32,7 +33,7 @@ class Docker(Command):
         print(f'Running containers: {c("ps")}')
         print(f'Total containers: {c("images")}')
 
-    def __str__(self):
+    def __repr__(self):
         return 'docker'
 
 class Lscpu(Command):
@@ -43,7 +44,7 @@ class Lscpu(Command):
         result = sh.lscpu('--parse=CORE')
         print(f'Total cores {result}')
 
-    def __str__(self):
+    def __repr__(self):
         return 'lscpu'
 
 class ProcessNum(Command):
@@ -54,8 +55,8 @@ class ProcessNum(Command):
         result = sh.wc(sh.ps('aux'), '-l')
         print(f'Total processes: {result}')
 
-    def __str__(self):
-        return 'ps -aux'
+    def __repr__(self):
+        return 'ps_aux'
 
 class DiskSpace(Command):
     def __init__(self, *args, **kwargs):
@@ -67,8 +68,8 @@ class DiskSpace(Command):
         result_total = df('size')
         print(f'free disk space {result_free}/{result_total}')
 
-    def __str__(self):
-        return 'df -h'
+    def __repr__(self):
+        return 'df_h'
 
 class Vmstat(Command):
     def __init__(self, *args, **kwargs):
@@ -77,7 +78,7 @@ class Vmstat(Command):
     def run(self):
         print(sh.vmstat())
 
-    def __str__(self):
+    def __repr__(self):
         return 'vmstat'
 
 
@@ -91,4 +92,13 @@ def pipeline(*args):
             raise Exception('unable to validate method')
         method.run()
 
-pipeline(FreeMem(), Docker(), Lscpu(), ProcessNum(), DiskSpace(), Vmstat())
+commands = [FreeMem(), Docker(), Lscpu(), ProcessNum(), DiskSpace(), Vmstat()]
+parser = argparse.ArgumentParser(description='Sysmon')
+parser.add_argument('--exclude', action="store", dest="exclude")
+parser.add_argument('--include', action="store", dest="include")
+args = parser.parse_args()
+if args.include:
+    new_commands = [c for c in commands for a in args.include.split(',') if a ==str(c)]
+    pipeline(*new_commands)
+else:
+    pipeline(*commands)
