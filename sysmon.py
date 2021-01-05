@@ -96,7 +96,12 @@ commands = [FreeMem(), Docker(), Lscpu(), ProcessNum(), DiskSpace(), Vmstat()]
 parser = argparse.ArgumentParser(description='Sysmon')
 parser.add_argument('--exclude', action="store", dest="exclude")
 parser.add_argument('--include', action="store", dest="include")
+parser.add_argument('--names', action="store", dest="names")
 args = parser.parse_args()
+if args.names:
+    for c in commands:
+        print(c)
+    exit()
 if args.include:
     new_commands = [c for c in commands for a in args.include.split(',') if a ==str(c)]
     pipeline(*new_commands)
