@@ -41,8 +41,8 @@ class Lscpu(Command):
         Command.__init__(self)
     
     def run(self):
-        result = sh.lscpu('--parse=CORE')
-        print(f'Total cores {result}')
+        result = sh.grep('-c', '^processor',  '/proc/cpuinfo')
+        print(f'Total cores: {result}')
 
     def __repr__(self):
         return 'lscpu'
