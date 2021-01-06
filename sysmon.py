@@ -19,7 +19,7 @@ class FreeMem(Command):
     
     def run(self):
         free = sh.grep(sh.free('-m'), 'Mem').split()[3]
-        print(f'Free memory: {free}')
+        print(f'title("Free memory") {free}')
 
     def __repr__(self):
         return 'freemem'
@@ -30,8 +30,8 @@ class Docker(Command):
     
     def run(self):
         c = lambda x: int(sh.wc(sh.docker(x), '-l'))-1
-        print(f'Running containers: {c("ps")}')
-        print(f'Total containers: {c("images")}')
+        print(f'{title("Running containers")} {c("ps")}')
+        print(f'{title("Total containers")} {c("images")}')
 
     def __repr__(self):
         return 'docker'
@@ -42,7 +42,7 @@ class Lscpu(Command):
     
     def run(self):
         result = sh.grep('-c', '^processor',  '/proc/cpuinfo')
-        print(f'Total cores: {result}')
+        print(f'{title("Total cores")} {result}')
 
     def __repr__(self):
         return 'lscpu'
@@ -53,7 +53,7 @@ class ProcessNum(Command):
     
     def run(self):
         result = sh.wc(sh.ps('aux'), '-l')
-        print(f'Total processes: {result}')
+        print(f'{title("Total processes")} {result}')
 
     def __repr__(self):
         return 'ps_aux'
