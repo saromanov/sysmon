@@ -66,7 +66,8 @@ class DiskSpace(Command):
         df = lambda output: sh.awk(sh.df("-h", f"--output={output}","--total"), "END {print $1}").rstrip()
         result_free = df('avail')
         result_total = df('size')
-        print(f'free disk space {result_free}/{result_total}')
+        title_text = title('free disk space')
+        print(f'{title_text}{result_free}/{result_total}')
 
     def __repr__(self):
         return 'df_h'
@@ -81,6 +82,11 @@ class Vmstat(Command):
     def __repr__(self):
         return 'vmstat'
 
+def title(text):
+    '''
+        returns colorized title for command
+    '''
+    return f'\u001b[36m{text}: \u001b[0m'
 
 def pipeline(*args):
     '''

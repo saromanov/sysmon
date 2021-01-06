@@ -1,2 +1,2 @@
 # sysmon
-Important system information in one command
+System monitoring informarion at one command
